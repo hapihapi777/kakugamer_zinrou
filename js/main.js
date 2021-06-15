@@ -1,155 +1,135 @@
 'use strict';
 {
-  // チェックボックスと<div>要素と削除ボタンをn人数分IDかclass付きで作る
-  // チェックが入ったら削除ボタンを有効にする
-  // 削除ボタンを押した人を削除して配列を詰める
-  function Initial_action() {
-    tuika();
+  let btn0 = document.getElementById('select');
+  btn0.addEventListener('click', setNinzuu);
+  let btn1 = document.getElementById('menber_list');
+  btn1.disabled = true;
+  btn1.addEventListener('click', addName);
+  let btn2 = document.getElementById('job_btn');
+  btn2.disabled = true;
+  btn2.addEventListener('click', GetJob);
 
-    const ninzuu = parseInt(document.getElementById("hito").value);
-    for (let i = 1; i <= ninzuu; i++) {
-      addForm(i);
+
+  // テスト中なので８人入った状態です
+  // テスト終了後は空にする
+  let menber_list = [
+    "ウメハラ",
+    "マゴ",
+    "ふ〜ど",
+    "ボンちゃん",
+    "どぐら",
+    "ナウマン",
+    "シュート",
+    "えいた",
+  ];
+
+  // ボタン１を押したら実行
+  function addName() {
+    // 配列を返す関数
+    let namelist = GetMenber();
+
+    let input = document.getElementById("text_name");
+    let output = document.getElementById("output");
+    // namelist.push(input.value);// 配列に要素を追加
+    output.textContent = "";
+
+    // 配列の要素を先頭から順番にすべて出力
+    let i = 0;
+
+
+    let ninzuu = setNinzuu();
+    console.log(setNinzuu());
+    while (i < namelist.length) {
+      output.textContent += (i + 1) + ":" + namelist[i] + " ";
+      i = i + 1;
+      if (namelist.length >= ninzuu) {
+        btn1.disabled = true;
+        btn2.disabled = false;
+      }
     }
-
-    ButtonMotion();
-    const select = document.getElementById("select");
-    select.disabled = true;
-    const hito = document.getElementById("hito");
-    settei.classList.add("nodisp");
-    const test = document.getElementById("test");
-    test.classList.remove('nodisp');
+    // console.log(namelist);
+    input.value = "";
   }
 
-  function tuika() {
-    const palette = document.createElement('div');
-    palette.id = "parent";
-    palette.classList.add("container");
+  // 人数セット
+  // ラジオボタンの操作
+  // function setNinzuu() {
+  // 
+  // }
 
-    const settei = document.getElementById("settei");
-
-    document.body.insertBefore(palette, settei.nextSibling);
-    // palette.textContent = "メンバー";
+  // セレクトメニュー
+  function setNinzuu() {
+    btn0.disabled = true;
+    let obj = document.getElementById('hito');
+    // // 選択されている値の番号を取得
+    let idx = obj.selectedIndex;
+    // // 値を取得
+    let txt = obj.options[idx].text;
+    // // 表示
+    document.getElementById('ninzuu').textContent = "今回は" + txt + "人村となります";
+    btn1.disabled = false;
+    return parseInt(txt);
   }
 
-  function addForm(num) {
-    const input_data = document.createElement('input');
-    input_data.type = 'search';
-    input_data.id = 'inputform_' + num;
-    input_data.classList.add("item5");
-    input_data.name = "member_name";
-    input_data.placeholder = num + "人目";
-
-    const parent = document.getElementById('parent');
-    parent.appendChild(input_data);
+  // 配列の更新
+  function GetMenber() {
+    let p = document.getElementById('text_name').value;
+    menber_list.push(p);
+    console.log(menber_list);
+    return menber_list;
   }
 
-  // ボタン関数
-  function ButtonMotion() {
-    const addMember = document.createElement("input");
-    addMember.type = 'button';
-    addMember.id = "addmember";
-    addMember.name = "member_btn";
-    addMember.classList.add('addition');
-    // addMember.classList.add('item1');
-    addMember.value = '確認ボタン';
+  // btn2実行
+  function GetJob() {
+    let menber = shuffle(menber_list);
+    console.log(menber_list);
 
-    const Member_decision = document.createElement("input");
-    Member_decision.type = 'button';
-    Member_decision.id = "member_decision";
-    Member_decision.name = "member_decision";
-    Member_decision.classList.add('addition');
-    // Member_decision.classList.add('item1');
-    Member_decision.value = '決定';
+    let kisi = document.getElementById('kisi');
+    let reibai = document.getElementById('reibai');
+    let kyouzin = document.getElementById('kyouzin');
+    let uranai = document.getElementById('uranai');
+    let zinrou = document.getElementById('zinrou');
 
-    const newDiv = document.createElement("div");
-    newDiv.id = "btn2ko";
-    newDiv.classList.add("item2");
+    // let junban = document.getElementById('junban');
 
-    const parent = document.getElementById("parent");
-    parent.appendChild(newDiv);
+    kisi.textContent = "騎士: " + menber[0];
+    reibai.textContent = "霊媒: " + menber[1];
+    kyouzin.textContent = "狂人: " + menber[2];
 
-    const btn2ko = document.getElementById("btn2ko");
-    btn2ko.appendChild(addMember);
-    btn2ko.appendChild(Member_decision);
-    // Member_decision.disabled = true;
-
-    const hyouzi = document.createElement("ul");
-    hyouzi.id = "hyouzi";
-    hyouzi.classList.add("item2");
-    parent.appendChild(hyouzi);
-
-    const ninzuu = parseInt(document.getElementById("hito").value);
-    document.getElementById('number_of_people').textContent = "今回は" + ninzuu + "人村となります";
-
-    for (let i = 0; i < ninzuu; i++) {
-      const new_li = document.createElement("li");
-      new_li.id = "li" + i;
-      hyouzi.appendChild(new_li);
-      // const li
-    }
-
-    addMember.addEventListener("click", GetMember);
-    // () => {
-    //   GetMember();
-      // const member_list = [];
-      // for (let i = 0; i < ninzuu; i++) {
-      //   const p_i = document.getElementsByName("member_name")[i].value;
-      //   member_list.push(p_i);
-      // }
-      // if (member_list.indexOf("") !== -1) {
-      //   console.log("kara");
-      //   Member_decision.disabled = true;
-      // } else {
-      //   Member_decision.disabled = false;
-      // }
-
-      // let str = "";
-      // for (let i = 0; i < member_list.length; i++) {
-      //   str += (i + 1) + ":" + member_list[i] + " ";
-      // }
-      // hyouzi.textContent = str;
-      // console.log(member_list);
-    // });
-
-  }
-
-  function GetMember() {
-    const ninzuu = parseInt(document.getElementById("hito").value);
-    const Member_decision = document.getElementsByName("Member_decision");
-    const hyouzi = document.getElementById("hyouzi");
-
-    const member_list = [];
-    for (let i = 0; i < ninzuu; i++) {
-      const p_i = document.getElementsByName("member_name")[i].value;
-      member_list.push(p_i);
-    }
-    if (member_list.indexOf("") !== -1) {
-      console.log("kara");
-      Member_decision.disabled = true;
+    let N = menber.length;
+    if (N > 10) {
+      let uranaisaki = Math.floor(Math.random() * (N - 4));
+      console.log(uranaisaki);
+      uranai.textContent = "占い: " + menber[N - 4] + "  [占い先 > " + menber[uranaisaki] + "]";
+      zinrou.innerHTML = "人狼: " + "<span class= 'dis'>" + menber[N - 3] + ", " + menber[N - 2] + ", " + menber[N - 1] + '</span>' + "←隠してます";
     } else {
-      Member_decision.disabled = false;
+      let uranaisaki = Math.floor(Math.random() * (N - 3));
+      console.log(uranaisaki);
+      uranai.textContent = "占い: " + menber[N - 3] + "  [占い先 > " + menber[uranaisaki] + "]";
+      zinrou.innerHTML = "人狼: " + menber[N - 2] + ", " + menber[N - 1];
+      // zinrou.innerHTML = "人狼: " + "<span class= 'dis'>" + menber[N - 2] + ", " + menber[N - 1] + '</span>' + "←隠してます" ;
     }
 
-    let str = "";
-    for (let i = 0; i < member_list.length; i++) {
-      str += (i + 1) + ":" + member_list[i] + " ";
-    }
-    hyouzi.textContent = str;
-    console.log(member_list);
-    // const ninzuu = parseInt(document.getElementById("hito").value);
-    // const member_list = [];
-    // for (let i = 0; i < ninzuu; i++) {
-    //   const p_i = document.getElementsByName("member_name")[i].value;
-    //   member_list.push(p_i);
-    // }
-    // if (member_list.indexOf("") !== -1) {
-    //   console.log("kara");
-    // }
-    // console.log(member_list);
-    // // return member_list;
+    GetJunban(menber_list);
   }
 
-  const select = document.getElementById('select');
-  select.addEventListener('click', Initial_action);
+  function GetJunban(array) {
+    let junban = document.getElementById('junban');
+    let menber = shuffle(array);
+    let result = [];
 
+    for (let i = 0; i < array.length; i++) {
+      result.push(" " + (i + 1) + ":" + menber[i]);
+    }
+    junban.textContent = result;
+    // return result;
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[j], arr[i]] = [arr[i], arr[j]];
+    }
+    return arr;
+  }
 }
