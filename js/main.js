@@ -11,6 +11,22 @@
   const casting_1 = document.getElementById("casting_1");
   casting_1.addEventListener('click', GetJob);
 
+  const number_of_people = document.getElementById("number_of_people");
+  number_of_people.addEventListener("click", Kaihei);
+
+  function Kaihei() {
+    const parent = document.getElementById("parent");
+    const ninzuu = parseInt(document.getElementById("hito").value);
+    if (parent.className.indexOf("nodisp") < 0) {
+      parent.classList.add('nodisp');
+      number_of_people.textContent = "今回は" + ninzuu + "人村" + "---開く---";
+    } else {
+      parent.classList.remove('nodisp');
+      number_of_people.textContent = "今回は" + ninzuu + "人村" + "---閉じる---";
+    }
+    // console.log(parent.className);
+  }
+
   // チェックボックスと<div>要素と削除ボタンをn人数分IDかclass付きで作る
   // チェックが入ったら削除ボタンを有効にする
   // 削除ボタンを押した人を削除して配列を詰める
@@ -23,7 +39,7 @@
     setting.classList.add("nodisp");
 
     const ninzuu = parseInt(document.getElementById("hito").value);
-    document.getElementById('number_of_people').textContent = "今回は" + ninzuu + "人村";
+    number_of_people.textContent = "今回は" + ninzuu + "人村" + "---閉じる---";
     for (let i = 1; i <= ninzuu; i++) {
       addForm(i);
     }
@@ -96,7 +112,7 @@
     } else {
       member_decision.disabled = false;
     }
-    console.log(member_list);
+    // console.log(member_list);
 
     return member_list;
     // console.log(member_list);
@@ -106,8 +122,14 @@
     const first_village = document.getElementById("first_village");
     first_village.classList.remove('nodisp');
 
-    member_decision.disabled = true;
-    casting_1.disabled = false;
+    let member_list = GetMember();
+    if(member_list.indexOf("") < 0) {
+      member_decision.disabled = true;
+      casting_1.disabled = false;
+    }else{
+      member_decision.disabled = true;
+      casting_1.disabled = true;
+    }
   }
 
   function GetJob() {
@@ -115,7 +137,7 @@
     member_decision.disabled = true;
     let this_member_list = [];
     this_member_list = this_member_list.concat(shuffle(member_list));
-    console.log(this_member_list);
+    // console.log(this_member_list);
 
     let N = this_member_list.length;
     let zinrou = ["【人狼】"];
@@ -132,10 +154,18 @@
     const text_place = ["job_1_0", "job_1_1", "job_1_2", "job_1_3"];
     for (let i = 0; i < this_job.length; i++) {
       let str = "";
+      document.getElementById(text_place[i]).classList.remove("blue", "yellow", "green");
       this_job[i].push(this_member_list[i]);
+      if (this_job[i][0] === "【ハンター】") {
+        document.getElementById(text_place[i]).classList.add("green");
+      }
+      if (this_job[i][0] === "【サイコキラー】") {
+        document.getElementById(text_place[i]).classList.add("yellow");
+      }
       if (this_job[i][0] === "【占い師】") {
         this_member_list.splice(i, 1);
-        console.log(this_member_list);
+        // console.log(this_member_list);
+        document.getElementById(text_place[i]).classList.add("blue");
         this_job[i].push("(占い先 > " + this_member_list[Math.floor(Math.random() * (this_member_list.length - 1))] + ")");
       }
       for (let j = 0; j < this_job[i].length; j++) {
@@ -149,22 +179,27 @@
     zinrou.forEach(e => zinrou_member += " " + e);
     document.getElementById("zinrou").textContent = zinrou_member;
 
-    console.log(zinrou);
-    console.log(this_member_list);
-    console.log(this_job);
+    // console.log(zinrou);
+    // console.log(this_member_list);
+    // console.log(this_job);
 
 
     member_list = shuffle(member_list);
 
     const first_member = document.getElementById("first_member");
-    let str = "";
+    let randomyou = [];
     for (let i = 0; i < member_list.length; i++) {
-      str = (i + 1) + ": " + member_list[i];
+      let str = "";
+      randomyou.push([i+1, member_list[i]]);
+      str = randomyou[i][0] + ": " + randomyou[i][1];
+      // str = (i + 1) + ": " + member_list[i];
       let list = first_member.querySelectorAll("li")[i];
       list.textContent = str;
     }
 
+    console.log(randomyou);
 
+    // let test = new Village("first_village");
   }
 
   function shuffle(arr) {
